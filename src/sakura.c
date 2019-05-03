@@ -62,6 +62,25 @@
  * Text displayed in the first 8 colors (0-7) is meek (uses thin strokes).
  * Text displayed in the second 8 colors (8-15) is bold (uses thick strokes). */
 
+const GdkRGBA nord_palette[PALETTE_SIZE] = {
+	{0.23046875,0.2578125,0.3203125,1},
+	{0.74609375,0.37890625,0.4140625,1},
+	{0.63671875,0.7421875,0.546875,1},
+	{0.91796875,0.79296875,0.54296875,1},
+	{0.50390625,0.62890625,0.75390625,1},
+	{0.703125,0.5546875,0.67578125,1},
+	{0.53125,0.75,0.8125,1},
+	{0.89453125,0.91015625,0.9375,1},
+	{0.296875,0.3359375,0.4140625,1},
+	{0.74609375,0.37890625,0.4140625,1},
+	{0.63671875,0.7421875,0.546875,1},
+	{0.91796875,0.79296875,0.54296875,1},
+	{0.50390625,0.62890625,0.75390625,1},
+	{0.703125,0.5546875,0.67578125,1},
+	{0.55859375,0.734375,0.73046875,1},
+	{0.921875,0.93359375,0.953125,1},
+};
+
 const GdkRGBA gruvbox_palette[PALETTE_SIZE] = {
         {0.156863, 0.156863, 0.156863, 1.000000},
         {0.800000, 0.141176, 0.113725, 1.000000},
@@ -1904,6 +1923,8 @@ sakura_set_palette(GtkWidget *widget, void *data)
 			sakura.palette=linux_palette;
 		} else if (strcmp(palette, "gruvbox")==0) {
 			sakura.palette=gruvbox_palette;
+		} else if (strcmp(palette, "nord")==0) {
+			sakura.palette=nord_palette;
 		} else if (strcmp(palette, "xterm")==0) {
 			sakura.palette=xterm_palette;
 		} else if (strcmp(palette, "rxvt")==0) {
@@ -2362,6 +2383,8 @@ sakura_init()
 		sakura.palette=linux_palette;
 	} else if (strcmp(cfgtmp, "gruvbox")==0) {
 		sakura.palette=gruvbox_palette;
+	} else if (strcmp(cfgtmp, "nord")==0) {
+		sakura.palette=nord_palette;
 	} else if (strcmp(cfgtmp, "xterm")==0) {
 		sakura.palette=xterm_palette;
 	} else if (strcmp(cfgtmp, "rxvt")==0) {
@@ -2632,7 +2655,7 @@ sakura_init_popup()
 	          *item_blinking_cursor, *item_allow_bold, *item_other_options, 
 	          *item_cursor, *item_cursor_block, *item_cursor_underline, *item_cursor_ibeam,
 	          *item_palette, *item_palette_tango, *item_palette_linux, *item_palette_xterm, *item_palette_rxvt,
-	          *item_palette_solarized_dark, *item_palette_solarized_light, *item_palette_gruvbox,
+	          *item_palette_solarized_dark, *item_palette_solarized_light, *item_palette_gruvbox, *item_palette_nord,
 	          *item_show_close_button, *item_tabs_on_bottom, *item_less_questions,
 	          *item_disable_numbered_tabswitch, *item_use_fading, *item_stop_tab_cycling_at_end_tabs;
 	GtkWidget *options_menu, *other_options_menu, *cursor_menu, *palette_menu;
@@ -2673,6 +2696,7 @@ sakura_init_popup()
 	item_palette_tango=gtk_radio_menu_item_new_with_label(NULL, "Tango");
 	item_palette_linux=gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(item_palette_tango), "Linux");
 	item_palette_gruvbox=gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(item_palette_tango), "Gruvbox");
+	item_palette_nord=gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(item_palette_tango), "nord");
 	item_palette_xterm=gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(item_palette_tango), "Xterm");
 	item_palette_rxvt=gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(item_palette_tango), "rxvt");
 	item_palette_solarized_dark=gtk_radio_menu_item_new_with_label_from_widget(GTK_RADIO_MENU_ITEM(item_palette_tango), "Solarized dark");
@@ -2759,6 +2783,8 @@ sakura_init_popup()
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item_palette_linux), TRUE);
 	} else if (strcmp(cfgtmp, "gruvbox")==0) {
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item_palette_gruvbox), TRUE);
+	} else if (strcmp(cfgtmp, "nord")==0) {
+		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item_palette_nord), TRUE);
 	} else if (strcmp(cfgtmp, "tango")==0) {
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item_palette_tango), TRUE);
 	} else if (strcmp(cfgtmp, "xterm")==0) {
@@ -2824,6 +2850,7 @@ sakura_init_popup()
 	gtk_menu_shell_append(GTK_MENU_SHELL(palette_menu), item_palette_tango);
 	gtk_menu_shell_append(GTK_MENU_SHELL(palette_menu), item_palette_linux);
 	gtk_menu_shell_append(GTK_MENU_SHELL(palette_menu), item_palette_gruvbox);
+	gtk_menu_shell_append(GTK_MENU_SHELL(palette_menu), item_palette_nord);
 	gtk_menu_shell_append(GTK_MENU_SHELL(palette_menu), item_palette_xterm);
 	gtk_menu_shell_append(GTK_MENU_SHELL(palette_menu), item_palette_rxvt);
 	gtk_menu_shell_append(GTK_MENU_SHELL(palette_menu), item_palette_solarized_dark);
@@ -2863,6 +2890,7 @@ sakura_init_popup()
 	g_signal_connect(G_OBJECT(item_palette_tango), "activate", G_CALLBACK(sakura_set_palette), "tango");
 	g_signal_connect(G_OBJECT(item_palette_linux), "activate", G_CALLBACK(sakura_set_palette), "linux");
 	g_signal_connect(G_OBJECT(item_palette_gruvbox), "activate", G_CALLBACK(sakura_set_palette), "gruvbox");
+	g_signal_connect(G_OBJECT(item_palette_nord), "activate", G_CALLBACK(sakura_set_palette), "nord");
 	g_signal_connect(G_OBJECT(item_palette_xterm), "activate", G_CALLBACK(sakura_set_palette), "xterm");
 	g_signal_connect(G_OBJECT(item_palette_rxvt), "activate", G_CALLBACK(sakura_set_palette), "rxvt");
 	g_signal_connect(G_OBJECT(item_palette_solarized_dark), "activate", G_CALLBACK(sakura_set_palette), "solarized_dark");
